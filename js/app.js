@@ -22,8 +22,8 @@ const winningCombos = [
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6];
-]
+    [2, 4, 6]
+];
 
 
 /*---------------------------- Variables (state) ----------------------------*/
@@ -34,7 +34,7 @@ let tie;
 /*------------------------ Cached Element References ------------------------*/
 const squareEls = document.querySelectorAll('.sqr');
 const messageEl = document.querySelector('#message');
-
+const boardEl = document.querySelector('.board')
 
 /*-------------------------------- Functions --------------------------------*/
 const render = () => {
@@ -45,8 +45,8 @@ const render = () => {
 const init = () => {
     board = [
         '', 'O', 'X',
-         '', '', '', 
-         '', '', '']
+        '', '', '', 
+        '', '', '']
     turn = 'X';
     winner = false;
     tie = false;
@@ -74,7 +74,48 @@ const updateMessage = () => {
         messageEl.innerText = 'Congratulations! You won!';
     }
 }
+
+
+const handleClick = (event) => {
+    // console.dir(event.target.id) confirming that these are indexes
+    console.dir(event.target);
+    const squareIndex = event.target.id;
+    if (event.target.className != 'sqr') {
+        return;
+    }
+
+    if (board[squareIndex] === 'X' || board[squareIndex] === 'O') {
+        return;
+    }
+    if (winner === true) {
+        return;
+    }
+
+    placePiece(squareIndex);
+    checkForWinner();
+    console.log(checkForWinner)
+
+}
+
+const placePiece = (index) => {
+    board[index] = turn;
+    // console.log(board) making sure that each click did add X into the array
+}
+
+const checkForWinner = () => {
+    for (let combo of winningCombos) {
+        if (combo[0] !== '' && combo[0] === combo[1] && combo[0] === combo[2]) {
+            console.log('yea')
+        }
+    }
+}
+checkForWinner()
+
+const checkForTie = () => {
+    if 
+}
 /*----------------------------- Event Listeners -----------------------------*/
 document.addEventListener("DOMContentLoaded", init);
+boardEl.addEventListener('click', handleClick); // for bubble event
 
 
