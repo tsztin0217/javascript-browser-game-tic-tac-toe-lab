@@ -25,7 +25,6 @@ const winningCombos = [
     [2, 4, 6]
 ];
 
-
 /*---------------------------- Variables (state) ----------------------------*/
 let board;
 let turn;
@@ -35,7 +34,7 @@ let tie;
 const squareEls = document.querySelectorAll('.sqr');
 const messageEl = document.querySelector('#message');
 const boardEl = document.querySelector('.board')
-
+const resetBtnEl = document.querySelector('#reset');
 /*-------------------------------- Functions --------------------------------*/
 const render = () => {
     updateBoard();
@@ -44,7 +43,7 @@ const render = () => {
 
 const init = () => {
     board = [
-        '', 'O', 'X',
+        '', '', '',
         '', '', '', 
         '', '', '']
     turn = 'X';
@@ -71,29 +70,25 @@ const updateMessage = () => {
     } else if (winner === false && tie === true) {
         messageEl.innerText = 'You are tied!';
     } else {
-        messageEl.innerText = 'Congratulations! You won!';
+        messageEl.innerText = `Congratulations! ${turn} won!`;
     }
 }
 
 
 const handleClick = (event) => {
     // console.dir(event.target.id) confirming that these are indexes
-    console.dir(event.target);
+    // console.dir(event.target);
     const squareIndex = event.target.id;
-    if (event.target.className != 'sqr') {
-        return;
-    }
-
-    if (board[squareIndex] === 'X' || board[squareIndex] === 'O') {
-        return;
-    }
-    if (winner === true) {
+    if (event.target.className !== 'sqr' || board[squareIndex] === 'X' || board[squareIndex] === 'O' || winner === true) {
         return;
     }
 
     placePiece(squareIndex);
     checkForWinner();
-    console.log(checkForWinner)
+    // console.log(winner);
+    checkForTie();
+    switchPlayerTurn();
+    render();
 
 }
 
@@ -102,20 +97,44 @@ const placePiece = (index) => {
     // console.log(board) making sure that each click did add X into the array
 }
 
+
 const checkForWinner = () => {
     for (let combo of winningCombos) {
-        if (combo[0] !== '' && combo[0] === combo[1] && combo[0] === combo[2]) {
-            console.log('yea')
+        if (board[combo[0]] !== '' && board[combo[0]] === board[combo[1]] && board[combo[0]] === board[combo[2]]) {
+            winner = true; // Set the winner to the current player's turn
+            return; // Exit once we find a winner
         }
     }
 }
-checkForWinner()
+
 
 const checkForTie = () => {
-    if 
+    if (winner === true ) {
+        return;
+    }
+
+    if (board.includes('')) {
+        tie = false;
+    } else {
+        tie = true;
+    }
+    console.log(tie);
+}
+
+const switchPlayerTurn = () => {
+    if (winner === true) {
+        return;
+    } else if (winner === false) {
+        if (turn === 'X') {
+            turn = 'O';
+        } else if (turn === 'O') {
+            turn = 'X';
+        }
+    }
+    console.log(turn);
 }
 /*----------------------------- Event Listeners -----------------------------*/
 document.addEventListener("DOMContentLoaded", init);
 boardEl.addEventListener('click', handleClick); // for bubble event
-
+resetBtnEl.addEventListener('click', init);
 
